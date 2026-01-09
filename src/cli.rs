@@ -46,6 +46,9 @@ pub enum Command {
         #[arg(required = true)]
         index: usize,
     },
+    /// List all sessions
+    #[command(alias = "ss")]
+    Sessions,
     /// List tasks (default if no args)
     #[command(alias = "l")]
     Ls,

@@ -56,6 +56,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             println!("Session: {}", session.name);
             println!("Removed task #{}", index);
         }
+        Some(Command::Sessions ) => {
+            let sessions = Session::get_sessions()?;
+            println!("Sessions:");
+            let current = session.name;
+            for session in sessions {
+                let marker = if session == current { " (current)" } else { "" };
+                println!("- {}{}", session, marker)
+            }
+        } 
         Some(Command::Session { .. }) => unreachable!(),
     }
 

@@ -25,6 +25,23 @@ impl Session {
         Ok(self.get_session_dir().join("tasks.toml"))
     }
 
+    pub fn get_sessions() -> std::io::Result<Vec<String>> {
+        let base_dir = data_local_dir()
+            .unwrap_or_else(|| PathBuf::from("."))
+            .join(APP_NAME);
+        if !base_dir.exists() {
+            return Ok(Vec::new());
+        }
+
+        let mut sessions: Vec<String> = fs::read_dir(base_dir)?
+            .filter_map(|entry| entry.ok())
+            .filter(|entry| entry.path().is_dir())
+            .map(|entry| entry.file_name().to_string_lossy().into_owned())
+            .collect();
+        sessions.sort();
+        Ok(sessions)
+    }
+
     pub fn get_current_session() -> Self {
         let session_file = data_local_dir()
             .unwrap_or_else(|| PathBuf::from("."))
