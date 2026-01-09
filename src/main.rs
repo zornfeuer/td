@@ -1,3 +1,4 @@
+use owo_colors::OwoColorize;
 use clap::Parser;
 use td::{
     cli::{Cli, Command},
@@ -11,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let session = match &cli.command {
         Some(Command::Session { session }) => {
             Session::set_current_sesion(session)?;
-            println!("Switched to session: {}", session);
+            println!("{}", format!("Switched to session: {}", session).blue());
             return Ok(());
         }
         _ => Session::get_current_session(),
@@ -29,32 +30,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             task_list.add_task(text.clone());
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("Added: {}", text);
+            println!("{}", format!("Added: {}", text).green());
         }
         Some(Command::Edit { index, text }) => {
             task_list.edit_task(*index, text.clone())?;
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("Edit #{}: {}", index, text);
+            println!("{}", format!("Edit #{}: {}", index, text).cyan());
         }
         Some(Command::Done { index }) => {
             task_list.mark_done(*index)?;
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("Marked #{} as done", index);
+            println!("{}", format!("Marked #{} as done", index).green());
         }
 
         Some(Command::Undone { index }) => {
             task_list.mark_undone(*index)?;
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("Marked #{} as undone", index);
+            println!("{}", format!("Marked #{} as undone", index).yellow());
         }
         Some(Command::Rm { index }) => {
             task_list.remove_task(*index)?;
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("Removed task #{}", index);
+            println!("{}", format!("Removed task #{}", index).yellow());
         }
         Some(Command::Sessions ) => {
             let sessions = Session::get_sessions()?;
@@ -62,7 +63,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             let current = session.name;
             for session in sessions {
                 let marker = if session == current { " (current)" } else { "" };
-                println!("- {}{}", session, marker)
+                println!("- {}{}", session.blue(), marker.green())
             }
         } 
         Some(Command::Session { .. }) => unreachable!(),

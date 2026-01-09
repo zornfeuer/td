@@ -1,3 +1,4 @@
+use owo_colors::OwoColorize;
 use std::{fs, path::Path};
 use serde::{Deserialize, Serialize};
 
@@ -41,17 +42,28 @@ impl TaskList {
 
     pub fn list_tasks(&self) {
         if self.tasks.is_empty() {
-            println!("No tasks.");
+            println!("{}", "No tasks.".dimmed());
             return;
         }
 
         for (i, task) in self.tasks.iter().enumerate() {
-            println!(
-                "{} [{}] {}",
-                i + 1,
-                if task.is_done() { "✓" } else { " " },
-                task.text
-            );
+            let idx = i + 1;
+            
+            if task.is_done() {
+                println!(
+                    "{} [{}] {}",
+                    idx.to_string().cyan(),
+                    "✓".green(),
+                    task.text.green()
+                );
+            } else {
+                println!(
+                    "{} [{}] {}",
+                    idx.to_string().cyan(),
+                    " ",
+                    task.text.white()
+                );
+            }
         }
     }
 
