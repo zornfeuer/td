@@ -11,8 +11,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
     let session = match &cli.command {
         Some(Command::Session { session }) => {
-            Session::set_current_sesion(session)?;
-            println!("{}", format!("Switched to session: {}", session).blue());
+            let session = Session::set_current_sesion(session)?;
+            println!(
+                "Switched to session: {} [{}]",
+                session.name.blue(),
+                session.count_undone_tasks_in_session()?.red()
+            );
             return Ok(());
         }
         _ => Session::get_current_session(),
@@ -62,8 +66,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             println!("Sessions:");
             let current = session.name;
             for session in sessions {
-                let marker = if session == current { " (current)" } else { "" };
-                println!("- {}{}", session.blue(), marker.green())
+                let marker = if session.name == current { " (current)" } else { "" };
+                println!(
+                    "- [{}] {}{}",
+                    session.count_undone_tasks_in_session()?.red(),
+                    session.name.blue(),
+                    marker.green()
+                );
             }
         } 
         Some(Command::Session { .. }) => unreachable!(),

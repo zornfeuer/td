@@ -95,6 +95,10 @@ impl TaskList {
         Ok(())
     }
 
+    pub fn count_undone(&self) -> usize {
+        self.tasks.iter().filter(|task| !task.is_done()).count()
+    }
+
     pub fn remove_task(&mut self, idx: usize) -> Result<(), String> {
         if idx == 0 || idx > self.tasks.len() {
             return Err("Invalid task number".to_string());
