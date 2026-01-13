@@ -51,15 +51,17 @@ impl TaskList {
             
             if task.is_done() {
                 println!(
-                    "{} [{}] {}",
+                    "{:>2}{} [{}] {}",
                     idx.to_string().cyan(),
+                    ".".cyan(),
                     "✓".green(),
                     task.text.green()
                 );
             } else {
                 println!(
-                    "{} [{}] {}",
+                    "{:>2}{} [{}] {}",
                     idx.to_string().cyan(),
+                    ".".cyan(),
                     " ",
                     task.text.white()
                 );

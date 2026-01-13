@@ -12,11 +12,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let session = match &cli.command {
         Some(Command::Session { session }) => {
             let session = Session::set_current_sesion(session)?;
-            println!(
-                "Switched to session: {} [{}]",
-                session.name.blue(),
-                session.count_undone_tasks_in_session()?.red()
-            );
+            let count = session.count_undone_tasks_in_session()?;
+            match count {
+                0 => println!("Switched to session: {} [{}]", session.name.blue(), count.green()),
+                _ => println!("Switched to session: {} [{}]", session.name.blue(), count.red()),
+            }
             return Ok(());
         }
         _ => Session::get_current_session(),
@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
     match &cli.command {
         None | Some(Command::Ls) => {
-            println!("Session: {}", session.name);
+            println!("Session: {}", session.name.blue());
             task_list.list_tasks();
         },
         Some(Command::Add { text }) => {
@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             task_list.edit_task(*index, text.clone())?;
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("{}", format!("Edit #{}: {}", index, text).cyan());
+            println!("{}", format!("Edit #{}: {}", index, text).green());
         }
         Some(Command::Done { index }) => {
             task_list.mark_done(*index)?;
@@ -67,12 +67,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             let current = session.name;
             for session in sessions {
                 let marker = if session.name == current { " (current)" } else { "" };
-                println!(
-                    "- [{}] {}{}",
-                    session.count_undone_tasks_in_session()?.red(),
-                    session.name.blue(),
-                    marker.green()
-                );
+                let count = session.count_undone_tasks_in_session()?;
+                match count {
+                    0 => println!("- [{:>2}] {}{}", count.green(), session.name.blue(), marker.green()),
+                    _ => println!("- [{:>2}] {}{}", count.red(), session.name.blue(), marker.green()),
+                }
             }
         } 
         Some(Command::Session { .. }) => unreachable!(),
