@@ -46,6 +46,12 @@ pub enum Command {
         #[arg(required = true)]
         index: usize,
     },
+    /// Remove a session
+    #[command(alias = "rs")]
+    RmSession {
+        #[arg(required = true)]
+        session: String,
+    },
     /// List all sessions
     #[command(alias = "ss")]
     Sessions,

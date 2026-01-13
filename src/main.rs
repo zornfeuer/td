@@ -61,6 +61,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             println!("Session: {}", session.name);
             println!("{}", format!("Removed task #{}", index).yellow());
         }
+        Some(Command::RmSession { session }) => {
+            Session::remove_session_by_name(session)?;
+            println!("{}", format!("Session '{}' removed", session).red());
+            println!("{}", format!("Current session is '{}'", Session::get_current_session().name).blue());
+        }
         Some(Command::Sessions ) => {
             let sessions = Session::get_sessions()?;
             println!("Sessions:");

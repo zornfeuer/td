@@ -49,6 +49,21 @@ impl Session {
         Ok(sessions)
     }
 
+    pub fn remove_session_by_name(name: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let current_session = Self::get_current_session();
+        let session_dir = (Self { name: name.to_string() }).get_session_dir();
+        
+        if session_dir.exists() {
+            fs::remove_dir_all(&session_dir)?;
+        }
+        
+        if current_session.name == name {
+            Self::set_current_sesion(DEFAULT_SESSION)?;
+        }
+        
+        Ok(())
+    }
+
     pub fn get_current_session() -> Self {
         let session_file = data_local_dir()
             .unwrap_or_else(|| PathBuf::from("."))
