@@ -105,11 +105,27 @@ impl TaskList {
         self.tasks.iter().filter(|task| !task.is_done()).count()
     }
 
-    pub fn remove_task(&mut self, idx: usize) -> Result<(), String> {
-        if idx == 0 || idx > self.tasks.len() {
-            return Err("Invalid task number".to_string());
+    pub fn remove_tasks(&mut self, indices: &[usize]) -> Result<(), String> {
+        if indices.is_empty() {
+            return Ok(());
         }
-        self.tasks.remove(idx - 1);
+
+        let max_valid = self.tasks.len();
+        for idx in indices.iter() {
+            if *idx == 0 || *idx > max_valid {
+                return Err(format!("Invalid task number {}", *idx));
+            }
+        }
+
+        let mut unique_indices: Vec<usize> = indices.iter().copied().collect();
+        unique_indices.sort_unstable();
+        unique_indices.dedup();
+        unique_indices.reverse();
+
+        for idx in unique_indices {
+            self.tasks.remove(idx - 1);
+        }
+
         Ok(())
     }
 

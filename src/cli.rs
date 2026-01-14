@@ -28,23 +28,23 @@ pub enum Command {
         #[arg(required = true)]
         text: String,
     },
-    /// Mark task as done
+    /// Mark tasks as done
     #[command(alias = "d")]
     Done {
         #[arg(required = true)]
-        index: usize,
+        indexes: Vec<usize>,
     },
-    /// Mark task as undone
+    /// Mark tasks as undone
     #[command(alias = "u")]
     Undone {
         #[arg(required = true)]
-        index: usize,
+        indexes: Vec<usize>,
     },
-    /// Remove a task
+    /// Remove tasks
     #[command(alias = "r")]
     Rm {
         #[arg(required = true)]
-        index: usize,
+        indexes: Vec<usize>,
     },
     /// Remove a session
     #[command(alias = "rs")]

@@ -52,24 +52,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             println!("Session: {}", session.name);
             println!("{}", format!("Edit #{}: {}", index, text).green());
         }
-        Some(Command::Done { index }) => {
-            task_list.mark_done(*index)?;
-            task_list.save_to_file(&file_path)?;
+        Some(Command::Done { indexes }) => {
             println!("Session: {}", session.name);
-            println!("{}", format!("Marked #{} as done", index).green());
+            for index in indexes.iter() {
+                task_list.mark_done(*index)?;
+                task_list.save_to_file(&file_path)?;
+                println!("{}", format!("Marked #{} as done", index).green());
+            }
         }
 
-        Some(Command::Undone { index }) => {
-            task_list.mark_undone(*index)?;
-            task_list.save_to_file(&file_path)?;
+        Some(Command::Undone { indexes }) => {
             println!("Session: {}", session.name);
-            println!("{}", format!("Marked #{} as undone", index).yellow());
+            for index in indexes.iter() {
+                task_list.mark_undone(*index)?;
+                task_list.save_to_file(&file_path)?;
+                println!("{}", format!("Marked #{} as undone", index).yellow());
+            }
         }
-        Some(Command::Rm { index }) => {
-            task_list.remove_task(*index)?;
+        Some(Command::Rm { indexes }) => {
+            task_list.remove_tasks(&indexes)?;
             task_list.save_to_file(&file_path)?;
             println!("Session: {}", session.name);
-            println!("{}", format!("Removed task #{}", index).yellow());
+            println!("{}", format!("Removed tasks #{:?}", indexes).yellow());
         }
         Some(Command::RmSession { session }) => {
             Session::remove_session_by_name(session)?;
