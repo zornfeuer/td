@@ -97,6 +97,10 @@ impl TaskList {
         Ok(())
     }
 
+    pub fn count_tasks(&self) -> usize {
+        self.tasks.len()
+    }
+
     pub fn count_undone(&self) -> usize {
         self.tasks.iter().filter(|task| !task.is_done()).count()
     }

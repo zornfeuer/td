@@ -14,8 +14,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             let session = Session::set_current_sesion(session)?;
             let count = session.count_undone_tasks_in_session()?;
             match count {
-                0 => println!("Switched to session: {} [{}]", session.name.blue(), count.green()),
-                _ => println!("Switched to session: {} [{}]", session.name.blue(), count.red()),
+                0 => println!(
+                    "Switched to session: {} [{}/{}]",
+                    session.name.blue(),
+                    count.green(),
+                    session.count_tasks()?.green()
+                ),
+                _ => println!(
+                    "Switched to session: {} [{}/{}]",
+                    session.name.blue(),
+                    count.red(),
+                    session.count_tasks()?.green()
+                ),
             }
             return Ok(());
         }
@@ -72,10 +82,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             let current = session.name;
             for session in sessions {
                 let marker = if session.name == current { " (current)" } else { "" };
-                let count = session.count_undone_tasks_in_session()?;
-                match count {
-                    0 => println!("- [{:>2}] {}{}", count.green(), session.name.blue(), marker.green()),
-                    _ => println!("- [{:>2}] {}{}", count.red(), session.name.blue(), marker.green()),
+                let count_undone = session.count_undone_tasks_in_session()?;
+                let count = session.count_tasks()?;
+                match count_undone {
+                    0 => println!(
+                        "- [{:>2}/{:>2}] {}{}",
+                        count_undone.green(),
+                        count.green(),
+                        session.name.blue(),
+                        marker.green()
+                    ),
+                    _ => println!(
+                        "- [{:>2}/{:>2}] {}{}",
+                        count_undone.red(),
+                        count.green(),
+                        session.name.blue(),
+                        marker.green()
+                    ),
                 }
             }
         } 

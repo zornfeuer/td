@@ -21,6 +21,12 @@ impl Session {
         fs::create_dir_all(self.get_session_dir())
     }
 
+    pub fn count_tasks(&self) -> Result<usize, Box<dyn std::error::Error>> {
+        let file_path = self.get_session_tasks_file()?;
+        let task_list = TaskList::load_from_file(&file_path)?;
+        Ok(task_list.count_tasks())
+    }
+
     pub fn count_undone_tasks_in_session(&self) -> Result<usize, Box<dyn std::error::Error>> {
         let file_path = self.get_session_tasks_file()?;
         let task_list = TaskList::load_from_file(&file_path)?;
